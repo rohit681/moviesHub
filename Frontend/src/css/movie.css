@@ -1,0 +1,19 @@
+.rate {
+  transition: 0.25s ease-in-out all;
+  border-radius: 5px;
+  width: 70px;
+  height: 29px;
+  color: #5799ef;
+  justify-content: center;
+  align-items: center;
+}
+.rate:hover {
+  color: white;
+  box-shadow: 5px 5px 5px 5px rgb(0 0 0 / 15%);
+  vertical-align: middle;
+  text-align: center;
+}
+
+i {
+  background-color: transparent;
+}
