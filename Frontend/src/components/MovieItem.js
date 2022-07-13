@@ -2,7 +2,6 @@ import React from "react";
 import "../css/movieItem.css";
 
 function MovieItem(props) {
-  //   const path = "https://image.tmdb.org/t/p/w500";
   // eslint-disable-next-line
   const { id, name, poster_path, year, getInfo } = props;
 

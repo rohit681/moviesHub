@@ -23,9 +23,8 @@ const Movies = () => {
   const getInfo = async (id, poster) => {
     setMovieID(id);
     setPoster(poster);
-    const data = await fetch(`http://www.omdbapi.com/?i=${id}&apikey=3eb19dd`);
+    const data = await fetch(`https://www.omdbapi.com/?i=${id}&apikey=3eb19dd`);
     const parsedData = await data.json();
-    console.log(parsedData);
     setName(parsedData.Title);
     setImage(parsedData.Poster);
     setYear(parsedData.Year);
@@ -43,7 +42,6 @@ const Movies = () => {
       setRuntime(`${calTimeMin}Min`);
     }
     setGenre(parsedData.Genre.split(","));
-    console.log(genre);
     ref.current.click();
   };
 

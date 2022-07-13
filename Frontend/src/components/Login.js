@@ -1,6 +1,5 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-// import DataContext from "../context/DataContext";
 import alertContext from "../context/Alert/alertContext";
 
 function Login() {
@@ -8,10 +7,10 @@ function Login() {
   let history = useNavigate();
   const context = useContext(alertContext);
 
-  const { alert, setAlert } = context;
+  const { setAlert } = context;
   const onLogin = async (e) => {
     e.preventDefault();
-    const response = await fetch(`http://localhost:5000/api/login`, {
+    const response = await fetch(`/api/login`, {
       method: "POST",
       mode: "cors",
       headers: {
@@ -24,24 +23,29 @@ function Login() {
     });
 
     const data = await response.json();
-    console.log(data);
     if (data.authToken) {
       localStorage.setItem("token", data.authToken);
+      localStorage.setItem("User", data.name);
       history("/home");
-      setAlert({ message: "User Logged in successfully", type: "Login" });
-      console.log(alert);
+      setAlert({
+        message: "Logged in successfully",
+        type: `Hello ${data.name}`,
+      });
       setTimeout(() => {
         setAlert(null);
       }, 1500);
     } else {
       setAlert({ message: "Invalid Credentials", type: "Error" });
-      console.log(alert);
       setTimeout(() => {
         setAlert(null);
       }, 1500);
     }
   };
-
+  useEffect(() => {
+    if (localStorage.getItem("token")) {
+      history("/home");
+    }
+  }, []);
   return (
     <div className="container d-flex justify-content-center my-5">
       <div

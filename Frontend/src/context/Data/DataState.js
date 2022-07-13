@@ -5,34 +5,29 @@ import { useState } from "react";
 const DataState = (props) => {
   const [text, setText] = useState("");
   const [movies, setMovies] = useState([]);
-  const [type, setType] = useState("");
   const [movieID, setMovieID] = useState("");
   const [poster, setPoster] = useState("");
   const [listpreview, setListpreview] = useState([]);
   const [page, setPage] = useState(1);
-  const [res, setRes] = useState();
-
-  const host = "http://localhost:5000";
+  const [res, setRes] = useState(0);
+  const [user, setUser] = useState("");
 
   //!.creating a new list
   const createList = async (title, name) => {
-    const response = await fetch(
-      `${host}/createNewPlayList${name}/${movieID}`,
-      {
-        method: "POST",
-        mode: "cors",
-        headers: {
-          "Content-Type": "application/json",
-          "auth-token": localStorage.getItem("token"),
-        },
-        body: JSON.stringify({ title, poster }),
-      }
-    );
+    const response = await fetch(`/createNewPlayList${name}/${movieID}`, {
+      method: "POST",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+        "auth-token": localStorage.getItem("token"),
+      },
+      body: JSON.stringify({ title, poster }),
+    });
   };
 
   //add itemp to an exixting list
   const addToExisting = async (id) => {
-    const response = await fetch(`${host}/addToPlaylist/${id}`, {
+    const response = await fetch(`/addToPlaylist/${id}`, {
       method: "PUT",
       mode: "cors",
       headers: {
@@ -44,7 +39,7 @@ const DataState = (props) => {
   };
 
   const playListpreview = async (title) => {
-    const response = await fetch(`${host}/fetchlistsbyuser/${title}`, {
+    const response = await fetch(`/fetchlistsbyuser/${title}`, {
       method: "GET",
       mode: "cors",
       headers: {
@@ -75,6 +70,8 @@ const DataState = (props) => {
         setPage,
         res,
         setRes,
+        user,
+        setUser,
       }}
     >
       {props.children}

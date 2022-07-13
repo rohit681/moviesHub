@@ -10,14 +10,13 @@ export default function Navbar() {
   const data = useContext(dataContext);
 
   const { setAlert } = context;
-  const { text, setText, movies, setMovies, setRes } = data;
+  const { text, setText, setMovies, setRes, res } = data;
 
   const onLogout = (e) => {
     e.preventDefault();
     localStorage.removeItem("token");
     navigate("/");
     setAlert({ message: "User Logged Out successfully", type: "Logout" });
-    console.log(alert);
     setTimeout(() => {
       setAlert(null);
     }, 1500);
@@ -29,11 +28,9 @@ export default function Navbar() {
       `https://www.omdbapi.com/?s=${text}&page=1&apikey=3eb19dd`
     );
     const parsedData = await data.json();
-    console.log(parsedData);
-    // const arr = parsedData.Search;
+
     setMovies(parsedData.Search);
-    setRes(parsedData.totalResults);
-    console.log(movies);
+    setRes(parsedData.totalResults - 10);
     navigate("/search");
   };
 
@@ -78,7 +75,7 @@ export default function Navbar() {
               <li className="nav-item">
                 <Link
                   className={`nav-link ${
-                    location.pathname === "/about" ? "active" : ""
+                    location.pathname === "/addtolist" ? "active" : ""
                   }`}
                   to="/addtolist"
                 >
@@ -86,9 +83,11 @@ export default function Navbar() {
                 </Link>
               </li>
             </ul>
-            <form class={localStorage.getItem("token") ? `d-flex` : `d-none`}>
+            <form
+              className={localStorage.getItem("token") ? `d-flex` : `d-none`}
+            >
               <input
-                class="form-control me-2"
+                className="form-control me-2"
                 type="search"
                 placeholder="Search"
                 aria-label="Search"
@@ -97,7 +96,7 @@ export default function Navbar() {
               />
 
               <button
-                class="btn btn-outline-success mx-2"
+                className="btn btn-outline-success mx-2"
                 type="submit"
                 onClick={onSearch}
               >
@@ -124,9 +123,14 @@ export default function Navbar() {
                 </Link>
               </>
             ) : (
-              <button className="btn btn-outline-success" onClick={onLogout}>
-                Logout
-              </button>
+              <>
+                <button className="btn btn-outline-success" onClick={onLogout}>
+                  Logout
+                </button>
+                <h5 className="mx-3" style={{ color: "White" }}>
+                  {localStorage.getItem("User")}
+                </h5>
+              </>
             )}
           </div>
         </div>

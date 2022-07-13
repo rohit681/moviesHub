@@ -1,14 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ListItem from "./ListItem";
+import dataContext from "../context/Data/dataContext";
 
 const Home = () => {
+  const data = useContext(dataContext);
   let history = useNavigate();
-  const host = "http://localhost:5000";
   const [list, setList] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const { setText } = data;
 
   const getData = async () => {
-    const response = await fetch(`${host}/fetchlists/public`, {
+    const response = await fetch(`/fetchlists/public`, {
       method: "GET",
       mode: "cors",
       headers: {
@@ -28,12 +31,13 @@ const Home = () => {
         created_by: item.name,
       });
       setList(arr);
+      setLoading(false);
     });
   };
 
   useEffect(() => {
     if (localStorage.getItem("token")) {
-      console.log("success");
+      setText("");
       getData();
     } else {
       history("/");
@@ -43,14 +47,13 @@ const Home = () => {
   return (
     <div>
       <div className="row mx-3 my-3">
-        {list &&
+        {!loading ? (
           list.map((item) => {
-            {
-              console.log(item);
-            }
             return (
               <>
                 <ListItem
+                  key={item.id}
+                  id={item.id}
                   name={item.title}
                   poster={item.poster}
                   size={item.movies.length}
@@ -59,7 +62,14 @@ const Home = () => {
                 />
               </>
             );
-          })}
+          })
+        ) : (
+          <div
+            className="container spinner-border my-3 text-light"
+            style={{ width: "3rem", height: "3rem" }}
+            role="status"
+          ></div>
+        )}
       </div>
     </div>
   );

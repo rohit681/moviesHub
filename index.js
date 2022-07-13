@@ -14,9 +14,9 @@ app.use(require("./Routes/auth"));
 if (process.env.NODE_ENV === "production") {
   app.use(express.static("Frontend/build"));
   const path = require("path");
-  // app.get("*", (req, res) => {
-  //   res.sendFile(path.resolve(__dirname, "Frontend", "build", "index.html"));
-  // });
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "Frontend", "build", "index.html"));
+  });
 }
 app.listen(port, () => {
   console.log(`MoviesHub is lisitening at http://localhost:${port}`);

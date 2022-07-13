@@ -11,10 +11,9 @@ const Addtolist = () => {
   const data = useContext(dataContext);
   const context = useContext(alertContext);
   const { setAlert } = context;
-  const { createList, fetchLists, addToExisting } = data;
+  const { createList, addToExisting, setMovieID, movieID, setText } = data;
   const ref = useRef(null);
   let navigate = useNavigate();
-  const host = "http://localhost:5000";
 
   const createLists = () => {
     ref.current.click();
@@ -23,9 +22,10 @@ const Addtolist = () => {
   const addToExis = (e, id) => {
     e.preventDefault();
     addToExisting(id);
-    navigate("/addtolist");
+    ref.current.click();
+    setMovieID("");
     setAlert({ message: "Added To successfully", type: "Success" });
-    console.log(alert);
+
     setTimeout(() => {
       setAlert(null);
     }, 1500);
@@ -34,16 +34,17 @@ const Addtolist = () => {
   const addTo = (e, name) => {
     e.preventDefault();
     createList(title, name);
-    navigate("/addtolist");
+    ref.current.click();
+    setMovieID("");
     setAlert({ message: "List created successfully", type: "Success" });
-    console.log(alert);
+
     setTimeout(() => {
       setAlert(null);
     }, 1500);
   };
 
   const getData = async () => {
-    const response = await fetch(`${host}/fetchlists`, {
+    const response = await fetch(`/fetchlists`, {
       method: "GET",
       mode: "cors",
       headers: {
@@ -66,7 +67,12 @@ const Addtolist = () => {
   };
 
   useEffect(() => {
-    getData();
+    if (localStorage.getItem("token")) {
+      setText("");
+      getData();
+    } else {
+      navigate("/");
+    }
   }, []);
 
   return (
@@ -190,14 +196,16 @@ const Addtolist = () => {
       </div>
 
       <div className="d-flex">
-        <button
-          type="button"
-          class="btn btn-outline-success mx-1 my-2"
-          style={{ width: "98%" }}
-          onClick={createLists}
-        >
-          Create PlayList
-        </button>
+        {movieID && (
+          <button
+            type="button"
+            class="btn btn-outline-success mx-1 my-2"
+            style={{ width: "98%" }}
+            onClick={createLists}
+          >
+            Create PlayList
+          </button>
+        )}
       </div>
       <div className="row mx-3 my-3">
         {list &&
@@ -205,6 +213,7 @@ const Addtolist = () => {
             return (
               <>
                 <ListItem
+                  key={item._id}
                   name={item.title}
                   poster={item.poster}
                   size={item.movies.length}

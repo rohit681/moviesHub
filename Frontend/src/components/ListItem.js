@@ -3,14 +3,13 @@ import { useNavigate } from "react-router-dom";
 import dataContext from "../context/Data/dataContext";
 
 function ListItem(props) {
-  const host = "http://localhost:5000";
   const { name, poster, size, type, created_by } = props;
   const data = useContext(dataContext);
   const { setListpreview } = data;
   let navigate = useNavigate();
 
-  const handleClick = async (name) => {
-    const response = await fetch(`${host}/fetchlistsbyuser/${name}`, {
+  const handleClick = async (name, id) => {
+    const response = await fetch(`/fetchlistsbyuser/${id}/${name}`, {
       method: "GET",
       mode: "cors",
       headers: {

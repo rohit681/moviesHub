@@ -14,7 +14,7 @@ function Signup() {
   let history = useNavigate();
   const onSignup = async (e) => {
     e.preventDefault();
-    const response = await fetch(`http://localhost:5000/api/auth`, {
+    const response = await fetch(`/api/auth`, {
       method: "POST",
       mode: "cors",
       headers: {
@@ -28,13 +28,11 @@ function Signup() {
     });
 
     const data = await response.json();
-    console.log(data);
     if (data.authToken) {
       localStorage.setItem("token", data.authToken);
       history("/");
     } else {
       setAlert({ message: "User already Exist", type: "Error" });
-      console.log(alert);
       setTimeout(() => {
         setAlert(null);
       }, 1500);

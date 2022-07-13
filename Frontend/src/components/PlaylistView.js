@@ -5,7 +5,8 @@ import MovieItem from "./MovieItem";
 
 const PlaylistView = () => {
   const data = useContext(dataContext);
-  const { movies, setMovieID, setPoster, listpreview } = data;
+  const { setPoster, listpreview, setMovieID } = data;
+  const [loading, setLoading] = useState(true);
 
   const [list, setList] = useState([]);
   const ref = useRef(null);
@@ -22,11 +23,10 @@ const PlaylistView = () => {
   const [director, setDirector] = useState("");
   // const list = []
   const getI = async (id, poster) => {
-    setMovieID(id);
     setPoster(poster);
-    const data = await fetch(`http://www.omdbapi.com/?i=${id}&apikey=3eb19dd`);
+    const data = await fetch(`https://www.omdbapi.com/?i=${id}&apikey=3eb19dd`);
     const parsedData = await data.json();
-    console.log(parsedData);
+    setMovieID("");
     setName(parsedData.Title);
     setImage(parsedData.Poster);
     setYear(parsedData.Year);
@@ -44,21 +44,22 @@ const PlaylistView = () => {
       setRuntime(`${calTimeMin}Min`);
     }
     setGenre(parsedData.Genre.split(","));
-    console.log(genre);
     ref.current.click();
   };
 
   const getInfo = async () => {
     const arr = [];
-    listpreview.map(async (id) => {
+    await listpreview.map(async (id) => {
       const data = await fetch(
-        `http://www.omdbapi.com/?i=${id}&apikey=3eb19dd`
+        `https://www.omdbapi.com/?i=${id}&apikey=3eb19dd`
       );
       let parsedData = await data.json();
       arr.push(parsedData);
-
-      setList(arr);
     });
+    setTimeout(() => {
+      setList(arr);
+      setLoading(false);
+    }, 2000);
   };
 
   useEffect(() => {
@@ -137,7 +138,7 @@ const PlaylistView = () => {
                     {rating}/10 &nbsp; &nbsp; &nbsp;
                     <div className="rate">
                       {" "}
-                      <i class="fa-regular fa-star">Rate</i>{" "}
+                      <i className="fa-regular fa-star">Rate</i>{" "}
                     </div>
                   </div>
                 </div>
@@ -158,7 +159,7 @@ const PlaylistView = () => {
           </div>
         </div>
       </div>
-      {list &&
+      {!loading ? (
         list.map((movie) => {
           return (
             <>
@@ -168,11 +169,18 @@ const PlaylistView = () => {
                 name={movie.Title ? movie.Title : movie.name}
                 poster_path={movie.Poster}
                 year={movie.Year}
-                getInfo={getInfo}
+                getInfo={getI}
               />
             </>
           );
-        })}
+        })
+      ) : (
+        <div
+          className="container spinner-border my-3 text-light"
+          style={{ width: "3rem", height: "3rem" }}
+          role="status"
+        ></div>
+      )}
     </div>
   );
 };

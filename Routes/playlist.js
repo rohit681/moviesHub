@@ -87,9 +87,9 @@ router.put("/addToPlaylist/:id", finduser, async (req, res) => {
 });
 
 //finding content of a lists
-router.get("/fetchlistsbyuser/:title", finduser, async (req, res) => {
+router.get("/fetchlistsbyuser/:id/:title", finduser, async (req, res) => {
   const lists = await Lists.find({
-    user: req.user.id,
+    id: req.params.id,
     title: req.params.title,
   });
   res.json(lists);

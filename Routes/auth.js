@@ -77,7 +77,11 @@ router.post("/api/login", async (req, res) => {
 
     return res
       .status(200)
-      .json({ authToken: authToken, message: "user login successfully" });
+      .json({
+        name: isUserExist.name,
+        authToken,
+        message: "user login successfully",
+      });
   } catch (err) {
     console.log(err);
   }
